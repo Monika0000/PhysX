@@ -1,3 +1,17 @@
+# PhysX-lite
+
+A fork of NVIDIA PhysX SDK 4.1 which reduces the repository size from 623 MB down to 40 MB. Many things have been removed:
+* documentation
+* samples
+* Kapla demo
+* PhysXGpu DLLs
+* dependencies only relevant to samples
+
+## Why?
+A few months ago, I tried cloning PhysX and it took approximately 2 hours to download. With `--depth=1`, the .git folder was about 700 MB. I found that rather annoying, so 3 days ago, I decided to trim it down a bit, surprised I haven't found anything similar to this fork.  
+
+I hope this will be useful to anybody who wants to use PhysX as a git submodule, who perhaps has slow Internet speeds, and anything alike.
+
 # NVIDIA PhysX SDK 4.1
 
 Copyright (c) 2021 NVIDIA Corporation. All rights reserved.
