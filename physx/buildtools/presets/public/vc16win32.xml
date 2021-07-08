@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<preset name="vc16win32" comment="VC16 Win32 PhysX general settings">
+<preset name="vc16win32" comment="VC16 (VS2019) Win32 PhysX general settings">
   <platform targetPlatform="win32" compiler="vc16" />
   <CMakeSwitches>
     <cmakeSwitch name="PX_BUILDSNIPPETS" value="True" comment="Generate the snippets" />
