@@ -1,13 +1,10 @@
-# Copied from: https://github.com/Zeblote/PhysX/commit/d6b1ca1abcd13a5af0e70a656279d6450326586c
+# Based on: https://github.com/Zeblote/PhysX/commit/d6b1ca1abcd13a5af0e70a656279d6450326586c
 # Thank you Zeblote
 
 # Ignore all the project files, except for the global cmake rules
 /physx/compiler/*
 !/physx/compiler/public/
 
-# Ignore the binaries, except for the ones that come by default
+# Ignore the binaries
 /physx/bin/*
-!/physx/bin/**/libPhysXGpu_64.so
-!/physx/bin/**/glut32.dll
-!/physx/bin/**/PhysXDevice.dll
-!/physx/bin/**/PhysXDevice64.dll
+
