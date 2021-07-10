@@ -1,16 +1,13 @@
 # PhysX-lite
 
-A fork of NVIDIA PhysX SDK 4.1 which reduces the repository size from 623 MB down to approximately 33 MB. Many things have been removed:
+A fork of NVIDIA PhysX SDK 4.1 which reduces the repository size from 623 MB down to approximately 16 MB. Many things have been removed:
 * documentation
 * samples
 * Kapla demo
 * PhysXGpu and PhysXDevice DLLs
 * MSVC v120 and v140 DLLs
 * dependencies only relevant to samples
-
-The Clang binaries for PhysX metadata generation were removed for OSX, while the ones for Windows and Linux were compressed in a 7z archive.  
-
-If those were also removed, then this repository would be about 16 MB. As PhysX 4's development seems minimal lately, without any changes that require metadata to be modified, this has a chance of happening.
+* clang-physxmetadata
 
 ## Why?
 A few months ago, I tried cloning PhysX and it took approximately 2 hours to download. With `--depth=1`, the .git folder was about 700 MB. I found that rather annoying, so 3 days ago, I decided to trim it down a bit, surprised I haven't found anything similar to this fork.  
