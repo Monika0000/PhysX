@@ -48,8 +48,6 @@ SET(CMAKE_CXX_FLAGS_RELEASE ${PHYSX_CXX_FLAGS_RELEASE})
 # Build PDBs for all configurations
 SET(CMAKE_SHARED_LINKER_FLAGS "/DEBUG")
 
-SET(SLN_PHYSXDEVICE_PATH "$ENV{PM_PhysXDevice_PATH}/bin/x86/")
-
 # Include ConfigureFileMT to expose that function
 INCLUDE(ConfigureFileMt)
 	
