@@ -14,6 +14,15 @@ A few months ago, I tried cloning PhysX and it took approximately 2 hours to dow
 
 I hope this will be useful to anybody who wants to use PhysX as a git submodule, who perhaps has slow Internet speeds, and anything alike.
 
+I'll also add fixes to this from time to time. Right now, there are some things that can be done, like adding VS2022 support and some fixes from GCC (at least from what I've seen in other people's forks of PhysX).
+
+## Alternatives
+
+If you're looking for a physics engine that is designed for games, but is also actively developed, I'd recommend you to take a look at JoltPhysics:  
+https://github.com/jrouwe/JoltPhysics
+
+I personally like it more than Bullet Physics SDK, it scales better than Bullet and PhysX on multiple cores, and it's already very small out of the box. Definitely check it out.
+
 # NVIDIA PhysX SDK 4.1
 
 Copyright (c) 2021 NVIDIA Corporation. All rights reserved.
