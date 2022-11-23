@@ -622,7 +622,7 @@ Sc::Scene::Scene(const PxSceneDesc& desc, PxU64 contextID) :
 	mPostBroadPhase3				(contextID, this, "ScScene.postBroadPhase3"),
 	mPreallocateContactManagers		(contextID, this, "ScScene.preallocateContactManagers"),
 	mIslandInsertion				(contextID, this, "ScScene.islandInsertion"),
-	mRegisterContactManagers		(contextID, this, "ScScene.registerContactManagers"),
+    mRegisterPreAllocatedContactManagers(contextID, this, "ScScene.registerPreAllocatedContactManagers"),
 	mRegisterInteractions			(contextID, this, "ScScene.registerInteractions"),
 	mRegisterSceneInteractions		(contextID, this, "ScScene.registerSceneInteractions"),
 	mBroadPhase						(contextID, this, "ScScene.broadPhase"),
@@ -2005,11 +2005,11 @@ void Sc::Scene::postBroadPhaseStage2(PxBaseTask* continuation)
 	processLostTouchPairs();
 	//Release unused Cms back to the pool (later, this needs to be done in a thread-safe way from multiple worker threads
 	mIslandInsertion.setContinuation(continuation);
-	mRegisterContactManagers.setContinuation(continuation);
+    mRegisterPreAllocatedContactManagers.setContinuation(continuation);
 	mRegisterInteractions.setContinuation(continuation);
 	mRegisterSceneInteractions.setContinuation(continuation);
 	mIslandInsertion.removeReference();
-	mRegisterContactManagers.removeReference();
+    mRegisterPreAllocatedContactManagers.removeReference();
 	mRegisterInteractions.removeReference();
 	mRegisterSceneInteractions.removeReference();
 
@@ -5634,7 +5634,7 @@ void Sc::Scene::islandInsertion(PxBaseTask* /*continuation*/)
 	}
 }
 
-void Sc::Scene::registerContactManagers(PxBaseTask* /*continuation*/)
+void Sc::Scene::registerPreAllocatedContactManagers(PxBaseTask* /*continuation*/)
 {
 	{
 		PxvNphaseImplementationContext* nphaseContext = mLLContext->getNphaseImplementationContext();

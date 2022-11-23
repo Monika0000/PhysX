@@ -321,7 +321,7 @@ namespace Sc
 					void						preallocateContactManagers(PxBaseTask* continuation);
 
 					void						islandInsertion(PxBaseTask* continuation);
-					void						registerContactManagers(PxBaseTask* continuation);
+					void						registerPreAllocatedContactManagers(PxBaseTask* continuation);
 					void						registerInteractions(PxBaseTask* continuation);
 					void						registerSceneInteractions(PxBaseTask* continuation);
 
@@ -958,7 +958,8 @@ namespace Sc
 					Cm::DelegateFanoutTask<Sc::Scene, &Sc::Scene::postBroadPhaseStage3>		mPostBroadPhase3;
 					Cm::DelegateTask<Sc::Scene, &Sc::Scene::preallocateContactManagers>		mPreallocateContactManagers;
 					Cm::DelegateTask<Sc::Scene, &Sc::Scene::islandInsertion>				mIslandInsertion;
-					Cm::DelegateTask<Sc::Scene, &Sc::Scene::registerContactManagers>		mRegisterContactManagers;
+					Cm::DelegateTask<Sc::Scene,
+					    &Sc::Scene::registerPreAllocatedContactManagers>                    mRegisterPreAllocatedContactManagers;
 					Cm::DelegateTask<Sc::Scene, &Sc::Scene::registerInteractions>			mRegisterInteractions;
 					Cm::DelegateTask<Sc::Scene, &Sc::Scene::registerSceneInteractions>		mRegisterSceneInteractions;
 					Cm::DelegateTask<Sc::Scene, &Sc::Scene::broadPhase>						mBroadPhase;
