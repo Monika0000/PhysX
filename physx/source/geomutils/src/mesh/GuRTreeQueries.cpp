@@ -80,6 +80,13 @@ using namespace Ps::aos;
 #define PxF32FV(x) FStore(x)
 #define CAST_U8(a) reinterpret_cast<PxU8*>(a)
 
+template <int index>
+PX_FORCE_INLINE Vec4V LocalV4SplatElement(Vec4V a)
+{
+    float* data = (float*)&a;
+    return Vec4V { data[index], data[index], data[index], data[index] };
+}
+
 /////////////////////////////////////////////////////////////////////////
 void RTree::traverseAABB(const PxVec3& boxMin, const PxVec3& boxMax, const PxU32 maxResults, PxU32* resultsPtr, Callback* callback) const
 {
@@ -101,12 +108,12 @@ void RTree::traverseAABB(const PxVec3& boxMin, const PxVec3& boxMax, const PxU32
 	Vec4V nqMin = Vec4V_From_PxVec3_WUndefined(boxMin);
 	Vec4V nqMax = Vec4V_From_PxVec3_WUndefined(boxMax);
 
-	Vec4V nqMinx4 = V4SplatElement<0>(nqMin);
-	Vec4V nqMiny4 = V4SplatElement<1>(nqMin);
-	Vec4V nqMinz4 = V4SplatElement<2>(nqMin);
-	Vec4V nqMaxx4 = V4SplatElement<0>(nqMax);
-	Vec4V nqMaxy4 = V4SplatElement<1>(nqMax);
-	Vec4V nqMaxz4 = V4SplatElement<2>(nqMax);
+	Vec4V nqMinx4 = LocalV4SplatElement<0>(nqMin);
+	Vec4V nqMiny4 = LocalV4SplatElement<1>(nqMin);
+	Vec4V nqMinz4 = LocalV4SplatElement<2>(nqMin);
+	Vec4V nqMaxx4 = LocalV4SplatElement<0>(nqMax);
+	Vec4V nqMaxy4 = LocalV4SplatElement<1>(nqMax);
+	Vec4V nqMaxz4 = LocalV4SplatElement<2>(nqMax);
 
 	// on 64-bit platforms the dynamic rtree pointer is also relative to mPages
 	PxU8* treeNodes8 = CAST_U8(mPages);
@@ -197,9 +204,9 @@ void RTree::traverseRay(
 	{
 		Vec4V fattenAABBs4 = Vec4V_From_PxVec3_WUndefined(*fattenAABBs);
 		fattenAABBs4 = V4Add(fattenAABBs4, epsInflateFloat4); // US2385 - shapes are "closed" meaning exactly touching shapes should report overlap
-		fattenAABBsX = V4SplatElement<0>(fattenAABBs4);
-		fattenAABBsY = V4SplatElement<1>(fattenAABBs4);
-		fattenAABBsZ = V4SplatElement<2>(fattenAABBs4);
+		fattenAABBsX = LocalV4SplatElement<0>(fattenAABBs4);
+		fattenAABBsY = LocalV4SplatElement<1>(fattenAABBs4);
+		fattenAABBsZ = LocalV4SplatElement<2>(fattenAABBs4);
 	}
 
 	Vec4V maxT4;
@@ -221,12 +228,12 @@ void RTree::traverseRay(
 	// P+tD=a; t=(a-P)/D
 	// t=(a - p.x)*1/d.x = a/d.x +(- p.x/d.x)
 	Vec4V rayPinvD = V4NegMulSub(rayInvD, rayP, zeroes);
-	Vec4V rayInvDsplatX = V4SplatElement<0>(rayInvD);
-	Vec4V rayInvDsplatY = V4SplatElement<1>(rayInvD);
-	Vec4V rayInvDsplatZ = V4SplatElement<2>(rayInvD);
-	Vec4V rayPinvDsplatX = V4SplatElement<0>(rayPinvD);
-	Vec4V rayPinvDsplatY = V4SplatElement<1>(rayPinvD);
-	Vec4V rayPinvDsplatZ = V4SplatElement<2>(rayPinvD);
+	Vec4V rayInvDsplatX = LocalV4SplatElement<0>(rayInvD);
+	Vec4V rayInvDsplatY = LocalV4SplatElement<1>(rayInvD);
+	Vec4V rayInvDsplatZ = LocalV4SplatElement<2>(rayInvD);
+	Vec4V rayPinvDsplatX = LocalV4SplatElement<0>(rayPinvD);
+	Vec4V rayPinvDsplatY = LocalV4SplatElement<1>(rayPinvD);
+	Vec4V rayPinvDsplatZ = LocalV4SplatElement<2>(rayPinvD);
 
 	PX_ASSERT(RTREE_N == 4 || RTREE_N == 8);
 	PX_ASSERT(mNumRootPages > 0);
@@ -358,67 +365,67 @@ void RTree::traverseOBB(
 #if PX_WINDOWS || PX_XBOXONE || PX_XBOX_SERIES_X
 	// Visual Studio compiler hangs with #defines
 	// On VMX platforms we use #defines in the other branch of this #ifdef to avoid register spills (LHS)
-	Vec4V obbESplatX = V4SplatElement<0>(obbE);
-	Vec4V obbESplatY = V4SplatElement<1>(obbE);
-	Vec4V obbESplatZ = V4SplatElement<2>(obbE);
+	Vec4V obbESplatX = LocalV4SplatElement<0>(obbE);
+	Vec4V obbESplatY = LocalV4SplatElement<1>(obbE);
+	Vec4V obbESplatZ = LocalV4SplatElement<2>(obbE);
 	Vec4V obbESplatNegX = V4Sub(zeroes, obbESplatX);
 	Vec4V obbESplatNegY = V4Sub(zeroes, obbESplatY);
 	Vec4V obbESplatNegZ = V4Sub(zeroes, obbESplatZ);
 	Vec4V obbXE = V4MulAdd(obbX, obbESplatX, zeroes); // scale axii by E
 	Vec4V obbYE = V4MulAdd(obbY, obbESplatY, zeroes); // scale axii by E
 	Vec4V obbZE = V4MulAdd(obbZ, obbESplatZ, zeroes); // scale axii by E
-	Vec4V obbOSplatX = V4SplatElement<0>(obbO);
-	Vec4V obbOSplatY = V4SplatElement<1>(obbO);
-	Vec4V obbOSplatZ = V4SplatElement<2>(obbO);
-	Vec4V obbXSplatX = V4SplatElement<0>(obbX);
-	Vec4V obbXSplatY = V4SplatElement<1>(obbX);
-	Vec4V obbXSplatZ = V4SplatElement<2>(obbX);
-	Vec4V obbYSplatX = V4SplatElement<0>(obbY);
-	Vec4V obbYSplatY = V4SplatElement<1>(obbY);
-	Vec4V obbYSplatZ = V4SplatElement<2>(obbY);
-	Vec4V obbZSplatX = V4SplatElement<0>(obbZ);
-	Vec4V obbZSplatY = V4SplatElement<1>(obbZ);
-	Vec4V obbZSplatZ = V4SplatElement<2>(obbZ);
-	Vec4V obbXESplatX = V4SplatElement<0>(obbXE);
-	Vec4V obbXESplatY = V4SplatElement<1>(obbXE);
-	Vec4V obbXESplatZ = V4SplatElement<2>(obbXE);
-	Vec4V obbYESplatX = V4SplatElement<0>(obbYE);
-	Vec4V obbYESplatY = V4SplatElement<1>(obbYE);
-	Vec4V obbYESplatZ = V4SplatElement<2>(obbYE);
-	Vec4V obbZESplatX = V4SplatElement<0>(obbZE);
-	Vec4V obbZESplatY = V4SplatElement<1>(obbZE);
-	Vec4V obbZESplatZ = V4SplatElement<2>(obbZE);
+	Vec4V obbOSplatX = LocalV4SplatElement<0>(obbO);
+	Vec4V obbOSplatY = LocalV4SplatElement<1>(obbO);
+	Vec4V obbOSplatZ = LocalV4SplatElement<2>(obbO);
+	Vec4V obbXSplatX = LocalV4SplatElement<0>(obbX);
+	Vec4V obbXSplatY = LocalV4SplatElement<1>(obbX);
+	Vec4V obbXSplatZ = LocalV4SplatElement<2>(obbX);
+	Vec4V obbYSplatX = LocalV4SplatElement<0>(obbY);
+	Vec4V obbYSplatY = LocalV4SplatElement<1>(obbY);
+	Vec4V obbYSplatZ = LocalV4SplatElement<2>(obbY);
+	Vec4V obbZSplatX = LocalV4SplatElement<0>(obbZ);
+	Vec4V obbZSplatY = LocalV4SplatElement<1>(obbZ);
+	Vec4V obbZSplatZ = LocalV4SplatElement<2>(obbZ);
+	Vec4V obbXESplatX = LocalV4SplatElement<0>(obbXE);
+	Vec4V obbXESplatY = LocalV4SplatElement<1>(obbXE);
+	Vec4V obbXESplatZ = LocalV4SplatElement<2>(obbXE);
+	Vec4V obbYESplatX = LocalV4SplatElement<0>(obbYE);
+	Vec4V obbYESplatY = LocalV4SplatElement<1>(obbYE);
+	Vec4V obbYESplatZ = LocalV4SplatElement<2>(obbYE);
+	Vec4V obbZESplatX = LocalV4SplatElement<0>(obbZE);
+	Vec4V obbZESplatY = LocalV4SplatElement<1>(obbZE);
+	Vec4V obbZESplatZ = LocalV4SplatElement<2>(obbZE);
 #else
-	#define obbESplatX V4SplatElement<0>(obbE)
-	#define obbESplatY V4SplatElement<1>(obbE)
-	#define obbESplatZ V4SplatElement<2>(obbE)
+	#define obbESplatX LocalV4SplatElement<0>(obbE)
+	#define obbESplatY LocalV4SplatElement<1>(obbE)
+	#define obbESplatZ LocalV4SplatElement<2>(obbE)
 	#define obbESplatNegX V4Sub(zeroes, obbESplatX)
 	#define obbESplatNegY V4Sub(zeroes, obbESplatY)
 	#define obbESplatNegZ V4Sub(zeroes, obbESplatZ)
 	#define obbXE V4MulAdd(obbX, obbESplatX, zeroes)
 	#define obbYE V4MulAdd(obbY, obbESplatY, zeroes)
 	#define obbZE V4MulAdd(obbZ, obbESplatZ, zeroes)
-	#define obbOSplatX V4SplatElement<0>(obbO)
-	#define obbOSplatY V4SplatElement<1>(obbO)
-	#define obbOSplatZ V4SplatElement<2>(obbO)
-	#define obbXSplatX V4SplatElement<0>(obbX)
-	#define obbXSplatY V4SplatElement<1>(obbX)
-	#define obbXSplatZ V4SplatElement<2>(obbX)
-	#define obbYSplatX V4SplatElement<0>(obbY)
-	#define obbYSplatY V4SplatElement<1>(obbY)
-	#define obbYSplatZ V4SplatElement<2>(obbY)
-	#define obbZSplatX V4SplatElement<0>(obbZ)
-	#define obbZSplatY V4SplatElement<1>(obbZ)
-	#define obbZSplatZ V4SplatElement<2>(obbZ)
-	#define obbXESplatX V4SplatElement<0>(obbXE)
-	#define obbXESplatY V4SplatElement<1>(obbXE)
-	#define obbXESplatZ V4SplatElement<2>(obbXE)
-	#define obbYESplatX V4SplatElement<0>(obbYE)
-	#define obbYESplatY V4SplatElement<1>(obbYE)
-	#define obbYESplatZ V4SplatElement<2>(obbYE)
-	#define obbZESplatX V4SplatElement<0>(obbZE)
-	#define obbZESplatY V4SplatElement<1>(obbZE)
-	#define obbZESplatZ V4SplatElement<2>(obbZE)
+	#define obbOSplatX LocalV4SplatElement<0>(obbO)
+	#define obbOSplatY LocalV4SplatElement<1>(obbO)
+	#define obbOSplatZ LocalV4SplatElement<2>(obbO)
+	#define obbXSplatX LocalV4SplatElement<0>(obbX)
+	#define obbXSplatY LocalV4SplatElement<1>(obbX)
+	#define obbXSplatZ LocalV4SplatElement<2>(obbX)
+	#define obbYSplatX LocalV4SplatElement<0>(obbY)
+	#define obbYSplatY LocalV4SplatElement<1>(obbY)
+	#define obbYSplatZ LocalV4SplatElement<2>(obbY)
+	#define obbZSplatX LocalV4SplatElement<0>(obbZ)
+	#define obbZSplatY LocalV4SplatElement<1>(obbZ)
+	#define obbZSplatZ LocalV4SplatElement<2>(obbZ)
+	#define obbXESplatX LocalV4SplatElement<0>(obbXE)
+	#define obbXESplatY LocalV4SplatElement<1>(obbXE)
+	#define obbXESplatZ LocalV4SplatElement<2>(obbXE)
+	#define obbYESplatX LocalV4SplatElement<0>(obbYE)
+	#define obbYESplatY LocalV4SplatElement<1>(obbYE)
+	#define obbYESplatZ LocalV4SplatElement<2>(obbYE)
+	#define obbZESplatX LocalV4SplatElement<0>(obbZE)
+	#define obbZESplatY LocalV4SplatElement<1>(obbZE)
+	#define obbZESplatZ LocalV4SplatElement<2>(obbZE)
 #endif
 
 	PX_ASSERT(mPageSize == 4 || mPageSize == 8);
