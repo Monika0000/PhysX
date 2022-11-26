@@ -1,3 +1,28 @@
+# PhysX-lite
+
+A fork of NVIDIA PhysX SDK 4.1 which reduces the repository size from 623 MB down to approximately 16 MB. Many things have been removed:
+* documentation
+* samples
+* Kapla demo
+* PhysXGpu and PhysXDevice DLLs
+* MSVC v120 and v140 DLLs
+* dependencies only relevant to samples
+* clang-physxmetadata
+
+## Why?
+A few months ago, I tried cloning PhysX and it took approximately 2 hours to download. With `--depth=1`, the .git folder was about 700 MB. I found that rather annoying, so 3 days ago, I decided to trim it down a bit, surprised I haven't found anything similar to this fork.  
+
+I hope this will be useful to anybody who wants to use PhysX as a git submodule, who perhaps has slow Internet speeds, and anything alike.
+
+I'll also add fixes to this from time to time. Right now, there are some things that can be done, like adding VS2022 support and some fixes from GCC (at least from what I've seen in other people's forks of PhysX).
+
+## Alternatives
+
+If you're looking for a physics engine that is designed for games, but is also actively developed, I'd recommend you to take a look at JoltPhysics:  
+https://github.com/jrouwe/JoltPhysics
+
+I personally like it more than Bullet Physics SDK, it scales better than Bullet and PhysX on multiple cores, and it's already very small out of the box. Definitely check it out.
+
 # NVIDIA PhysX SDK 4.1
 
 Copyright (c) 2021 NVIDIA Corporation. All rights reserved.

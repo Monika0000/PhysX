@@ -149,11 +149,7 @@ class CMakePreset:
 
     def getPlatformCMakeParams(self):
         outString = ' '
-        if self.compiler == 'vc12':
-            outString = outString + '-G \"Visual Studio 12 2013\"'
-        elif self.compiler == 'vc14':
-            outString = outString + '-G \"Visual Studio 14 2015\"'
-        elif self.compiler == 'vc15':
+        if self.compiler == 'vc15':
             outString = outString + '-G \"Visual Studio 15 2017\"'
         elif self.compiler == 'vc16':
             outString = outString + '-G \"Visual Studio 16 2019\"'
@@ -178,33 +174,6 @@ class CMakePreset:
             outString = outString + ' -DTARGET_BUILD_PLATFORM=windows'
             outString = outString + ' -DPX_OUTPUT_ARCH=x86'
             return outString
-        elif self.targetPlatform == 'uwp64':
-            outString = outString + ' -Ax64'
-            outString = outString + ' -DTARGET_BUILD_PLATFORM=uwp'
-            outString = outString + ' -DPX_OUTPUT_ARCH=x86'
-            outString = outString + ' -DCMAKE_SYSTEM_NAME=WindowsStore'
-            outString = outString + ' -DCMAKE_SYSTEM_VERSION=10.0'            
-            return outString
-        elif self.targetPlatform == 'uwp32':
-            outString = outString + ' -AWin32'
-            outString = outString + ' -DTARGET_BUILD_PLATFORM=uwp'
-            outString = outString + ' -DPX_OUTPUT_ARCH=x86'
-            outString = outString + ' -DCMAKE_SYSTEM_NAME=WindowsStore'
-            outString = outString + ' -DCMAKE_SYSTEM_VERSION=10.0'            
-            return outString
-        elif self.targetPlatform == 'uwparm32':
-            outString = outString + ' -AARM'
-            outString = outString + ' -DTARGET_BUILD_PLATFORM=uwp'
-            outString = outString + ' -DPX_OUTPUT_ARCH=arm'
-            outString = outString + ' -DCMAKE_SYSTEM_NAME=WindowsStore'
-            outString = outString + ' -DCMAKE_SYSTEM_VERSION=10.0'            
-            return outString
-        elif self.targetPlatform == 'uwparm64':
-            outString = outString + ' -AARM64'
-            outString = outString + ' -DTARGET_BUILD_PLATFORM=uwp'
-            outString = outString + ' -DPX_OUTPUT_ARCH=arm'
-            outString = outString + ' -DCMAKE_SYSTEM_NAME=WindowsStore'
-            outString = outString + ' -DCMAKE_SYSTEM_VERSION=10.0'            
             return outString
         elif self.targetPlatform == 'ps4':
             outString = outString + ' -DTARGET_BUILD_PLATFORM=ps4'
@@ -386,7 +355,7 @@ def presetProvided(pName):
                   os.environ['PHYSX_ROOT_DIR'] + '/compiler/' + cmakeMasterDir + '\"' + cmakeParams)
         os.chdir(os.environ['PHYSX_ROOT_DIR'])
     else:
-        configs = ['debug', 'checked', 'profile', 'release']
+        configs = ['debug', 'release']
         for config in configs:
             # cleanup and create output directory
             outputDir = os.path.join('compiler', parsedPreset.presetName + '-' + config)
@@ -400,7 +369,6 @@ def presetProvided(pName):
                       cmakeMasterDir + '\"' + cmakeParams + ' -DCMAKE_BUILD_TYPE=' + config)
             os.chdir(os.environ['PHYSX_ROOT_DIR'])
     pass
-
 
 def main():
     if len(sys.argv) != 2:

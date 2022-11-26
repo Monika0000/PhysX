@@ -34,7 +34,6 @@ ENDIF()
 project(PhysXSDK C CXX)
 
 OPTION(PX_BUILDSNIPPETS "Generate the snippets" OFF)
-OPTION(PX_BUILDPUBLICSAMPLES "Generate the samples" OFF)
 OPTION(PX_CMAKE_SUPPRESS_REGENERATION "Disable zero_check projects" OFF)
 
 IF(NOT DEFINED CMAKEMODULES_VERSION)
@@ -79,15 +78,6 @@ IF(PX_BUILDSNIPPETS)
 	ADD_SUBDIRECTORY(${PHYSX_ROOT_DIR}/snippets/compiler/cmake ${CMAKE_CURRENT_BINARY_DIR}/sdk_snippets_bin)
 
 	MESSAGE("Added Snippets")
-ENDIF()
-
-IF(PX_BUILDPUBLICSAMPLES)
-	IF(TARGET_BUILD_PLATFORM STREQUAL "windows" OR TARGET_BUILD_PLATFORM STREQUAL "linux")
-		# Add samples projects into the solution
-		ADD_SUBDIRECTORY(${PHYSX_ROOT_DIR}/samples/compiler/cmake ${CMAKE_CURRENT_BINARY_DIR}/sdk_samples_bin)
-
-		MESSAGE("Added Samples")
-	ENDIF()
 ENDIF()
 
 IF(TARGET_BUILD_PLATFORM STREQUAL "switch")
