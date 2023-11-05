@@ -63,6 +63,30 @@ struct PvdTypeToDataTypeMap
 	bool compile_error;
 };
 
+#ifdef __linux__
+#define DECLARE_INTERNAL_PVD_TYPE(type)                                                                                \
+	template <>                                                                                                        \
+	struct DataTypeToPvdTypeMap<type>                                                                                  \
+	{                                                                                                                  \
+		enum Enum                                                                                                      \
+		{                                                                                                              \
+			BaseTypeEnum = PvdInternalType::type                                                                       \
+		};                                                                                                             \
+	};                                                                                                                 \
+	template <>                                                                                                        \
+	struct PvdTypeToDataTypeMap<PvdInternalType::type>                                                                 \
+	{                                                                                                                  \
+		typedef type TDataType;                                                                                        \
+	};                                                                                                                 \
+	template <>                                                                                                        \
+	struct PvdDataTypeToNamespacedNameMap<type>                                                                        \
+	{                                                                                                                  \
+		NamespacedName Name;                                                                                           \
+		PvdDataTypeToNamespacedNameMap() : Name("physx3_debugger_internal", #type)                                     \
+		{                                                                                                              \
+		}                                                                                                              \
+	};
+#else
 #define DECLARE_INTERNAL_PVD_TYPE(type)                                                                                \
 	template <>                                                                                                        \
 	struct DataTypeToPvdTypeMap<type>                                                                                  \
@@ -85,6 +109,7 @@ struct PvdTypeToDataTypeMap
 		{                                                                                                              \
 		}                                                                                                              \
 	};
+#endif
 #include "PxPvdObjectModelInternalTypeDefs.h"
 #undef DECLARE_INTERNAL_PVD_TYPE
 

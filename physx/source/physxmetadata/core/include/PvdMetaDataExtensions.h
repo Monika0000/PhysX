@@ -296,14 +296,21 @@ struct IsFlagsType
 	bool FlagData;
 };
 
+#ifdef __linux__
+        template<typename TEnumType, typename TStorageType>
+        struct IsFlagsType<PxFlags<TEnumType, TStorageType> >
+        {
+            const PxU32ToName* FlagData;
+            IsFlagsType () : FlagData( PxEnumTraits<TEnumType>().NameConversion ) {}
+        };
+#else
 template<typename TEnumType, typename TStorageType>
 struct IsFlagsType<PxFlags<TEnumType, TStorageType> > 
 {
 	const PxU32ToName* FlagData;
 	IsFlagsType<PxFlags<TEnumType, TStorageType> > () : FlagData( PxEnumTraits<TEnumType>().NameConversion ) {}
 };
-
-
+#endif
 
 template<typename TDataType>
 struct PvdClassForType

@@ -229,6 +229,46 @@ struct PvdDataTypeToNamespacedNameMap
 };
 // This mapping tells you the what class id to use for the base datatypes
 //
+#ifdef __linux__
+#define DECLARE_BASE_PVD_TYPE(type)                                                                                    \
+	template <>                                                                                                        \
+	struct BaseDataTypeToTypeMap<type>                                                                                 \
+	{                                                                                                                  \
+		enum Enum                                                                                                      \
+		{                                                                                                              \
+			BaseTypeEnum = PvdBaseType::type                                                                           \
+		};                                                                                                             \
+	};                                                                                                                 \
+	template <>                                                                                                        \
+	struct BaseDataTypeToTypeMap<const type&>                                                                          \
+	{                                                                                                                  \
+		enum Enum                                                                                                      \
+		{                                                                                                              \
+			BaseTypeEnum = PvdBaseType::type                                                                           \
+		};                                                                                                             \
+	};                                                                                                                 \
+	template <>                                                                                                        \
+	struct BaseTypeToDataTypeMap<PvdBaseType::type>                                                                    \
+	{                                                                                                                  \
+		typedef type TDataType;                                                                                        \
+	};                                                                                                                 \
+	template <>                                                                                                        \
+	struct PvdDataTypeToNamespacedNameMap<type>                                                                        \
+	{                                                                                                                  \
+		NamespacedName Name;                                                                                           \
+		PvdDataTypeToNamespacedNameMap() : Name("physx3", #type)                                                       \
+		{                                                                                                              \
+		}                                                                                                              \
+	};                                                                                                                 \
+	template <>                                                                                                        \
+	struct PvdDataTypeToNamespacedNameMap<const type&>                                                                 \
+	{                                                                                                                  \
+		NamespacedName Name;                                                                                           \
+		PvdDataTypeToNamespacedNameMap() : Name("physx3", #type)                                                       \
+		{                                                                                                              \
+		}                                                                                                              \
+	};
+#else
 #define DECLARE_BASE_PVD_TYPE(type)                                                                                    \
 	template <>                                                                                                        \
 	struct BaseDataTypeToTypeMap<type>                                                                                 \
@@ -268,6 +308,7 @@ struct PvdDataTypeToNamespacedNameMap
 		}                                                                                                              \
 	};
 
+#endif
 DECLARE_TYPES
 #undef DECLARE_BASE_PVD_TYPE
 
@@ -282,6 +323,17 @@ inline NamespacedName getPvdNamespacedNameForType()
 	return PvdDataTypeToNamespacedNameMap<TDataType>().Name;
 }
 
+#ifdef __linux__
+#define DEFINE_PVD_TYPE_NAME_MAP(type, ns, name)                                                                       \
+	template <>                                                                                                        \
+	struct PvdDataTypeToNamespacedNameMap<type>                                                                        \
+	{                                                                                                                  \
+		NamespacedName Name;                                                                                           \
+		PvdDataTypeToNamespacedNameMap() : Name(ns, name)                                                              \
+		{                                                                                                              \
+		}                                                                                                              \
+	};
+#else
 #define DEFINE_PVD_TYPE_NAME_MAP(type, ns, name)                                                                       \
 	template <>                                                                                                        \
 	struct PvdDataTypeToNamespacedNameMap<type>                                                                        \
@@ -292,6 +344,19 @@ inline NamespacedName getPvdNamespacedNameForType()
 		}                                                                                                              \
 	};
 
+#endif
+#ifdef __linux__
+#define DEFINE_PVD_TYPE_ALIAS(newType, oldType)                                                                        \
+	template <>                                                                                                        \
+	struct PvdDataTypeToNamespacedNameMap<newType>                                                                     \
+	{                                                                                                                  \
+		NamespacedName Name;                                                                                           \
+		PvdDataTypeToNamespacedNameMap() : Name(PvdDataTypeToNamespacedNameMap<oldType>().Name)                        \
+		{                                                                                                              \
+		}                                                                                                              \
+	};
+        DEFINE_PVD_TYPE_ALIAS(const void*, void*)
+#else
 #define DEFINE_PVD_TYPE_ALIAS(newType, oldType)                                                                        \
 	template <>                                                                                                        \
 	struct PvdDataTypeToNamespacedNameMap<newType>                                                                     \
@@ -301,9 +366,8 @@ inline NamespacedName getPvdNamespacedNameForType()
 		{                                                                                                              \
 		}                                                                                                              \
 	};
-
 DEFINE_PVD_TYPE_ALIAS(const void*, void*)
-
+#endif
 struct ArrayData
 {
 	uint8_t* mBegin;

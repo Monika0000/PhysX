@@ -50,7 +50,16 @@ struct PxVehiclePropertyInfoName
 		LastPxPropertyInfoName
 	};
 };
-		
+
+#ifdef __linux__
+#define DEFINE_PROPERTY_TO_VALUE_STRUCT_MAP( type, prop, valueStruct )																	\
+	template<> struct PxPropertyToValueStructMemberMap< PxVehiclePropertyInfoName::type##_##prop >									\
+	{																																	\
+		PxU32 Offset;																													\
+		PxPropertyToValueStructMemberMap() : Offset( PX_OFFSET_OF_RT( valueStruct, prop ) ) {}	\
+		template<typename TOperator> void visitProp( TOperator inOperator, valueStruct& inStruct ) { inOperator( inStruct.prop );	}	\
+	};
+#else
 #define DEFINE_PROPERTY_TO_VALUE_STRUCT_MAP( type, prop, valueStruct )																	\
 	template<> struct PxPropertyToValueStructMemberMap< PxVehiclePropertyInfoName::type##_##prop >									\
 	{																																	\
@@ -58,6 +67,7 @@ struct PxVehiclePropertyInfoName
 		PxPropertyToValueStructMemberMap< PxVehiclePropertyInfoName::type##_##prop >() : Offset( PX_OFFSET_OF_RT( valueStruct, prop ) ) {}	\
 		template<typename TOperator> void visitProp( TOperator inOperator, valueStruct& inStruct ) { inOperator( inStruct.prop );	}	\
 	};
+#endif
 
 struct MFrictionVsSlipGraphProperty : public PxExtendedDualIndexedPropertyInfo<PxVehiclePropertyInfoName::PxVehicleTireData_MFrictionVsSlipGraph
 																			, PxVehicleTireData

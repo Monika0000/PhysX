@@ -486,6 +486,15 @@ struct PxPropertyToValueStructMemberMap
 };
 
 
+#ifdef __linux__
+#define DEFINE_PROPERTY_TO_VALUE_STRUCT_MAP( type, prop, valueStruct )																	\
+	template<> struct PxPropertyToValueStructMemberMap< PxPropertyInfoName::type##_##prop >												\
+	{																																	\
+		PxU32 Offset;																													\
+		PxPropertyToValueStructMemberMap() : Offset( PX_OFFSET_OF_RT( valueStruct, prop ) ) {}		                                    \
+		template<typename TOperator> void visitProp( TOperator inOperator, valueStruct& inStruct ) { inOperator( inStruct.prop );	}	\
+	};
+#else
 #define DEFINE_PROPERTY_TO_VALUE_STRUCT_MAP( type, prop, valueStruct )																	\
 	template<> struct PxPropertyToValueStructMemberMap< PxPropertyInfoName::type##_##prop >												\
 	{																																	\
@@ -493,8 +502,7 @@ struct PxPropertyToValueStructMemberMap
 		PxPropertyToValueStructMemberMap< PxPropertyInfoName::type##_##prop >() : Offset( PX_OFFSET_OF_RT( valueStruct, prop ) ) {}		\
 		template<typename TOperator> void visitProp( TOperator inOperator, valueStruct& inStruct ) { inOperator( inStruct.prop );	}	\
 	};
-	
-
+#endif
 
 struct PxShapeGeometryPropertyHelper
 {

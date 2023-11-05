@@ -515,11 +515,15 @@ PX_COMPILE_TIME_ASSERT(PX_OFFSET_OF(PxPackValidation, a) == 8);
 
 // Macro for avoiding default assignment and copy, because doing this by inheritance can increase class size on some
 // platforms.
-#define PX_NOCOPY(Class)                                                                                               \
-	\
-protected:                                                                                                             \
-	Class(const Class&);                                                                                               \
-	Class& operator=(const Class&);
+
+#ifdef __linux__
+    #define PX_NOCOPY(Class)
+#else
+    #define PX_NOCOPY(Class)                                                                                            \
+    protected:                                                                                                          \
+	    Class(const Class&);                                                                                            \
+	    Class& operator=(const Class&);
+#endif
 
 #ifndef DISABLE_CUDA_PHYSX
 //CUDA is currently supported only on windows 
