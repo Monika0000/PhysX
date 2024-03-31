@@ -29,6 +29,9 @@
 #ifndef PX_CONFIG
 #define PX_CONFIG
 
+#ifndef PX_PHYSX_STATIC_LIB
+	#define PX_PHYSX_STATIC_LIB
+#endif
 
 
 #endif  // PX_CONFIG

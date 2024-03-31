@@ -30,6 +30,8 @@
 #ifndef PXFOUNDATION_PXPREPROCESSOR_H
 #define PXFOUNDATION_PXPREPROCESSOR_H
 
+#include <PxConfig.h>
+
 #include <stddef.h>
 #if !defined(PX_GENERATE_META_DATA)
 #include <ciso646>  
