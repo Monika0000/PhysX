@@ -82,10 +82,10 @@ https://developercommunity.visualstudio.com/content/problem/66047/possible-compi
 #define PX_PHYSX_GPU_API
 #endif // PX_SUPPORT_GPU_PHYSX
 
-#if defined PX_PHYSX_STATIC_LIB
+#if defined(PX_PHYSX_STATIC_LIB)
 	#define PX_PHYSX_COMMON_API
 #else
-    ...
+    how the fuck did you even get here?...
 	#if (PX_WINDOWS_FAMILY || PX_XBOXONE || PX_PS4 || PX_XBOX_SERIES_X) && !defined(__CUDACC__)
 		#if defined PX_PHYSX_COMMON_EXPORTS
 			#define PX_PHYSX_COMMON_API __declspec(dllexport)

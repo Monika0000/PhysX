@@ -78,7 +78,12 @@ namespace physx
 		if (!gPxPhysXGpu && createIfNeeded)
 		{
 #ifdef PX_PHYSX_GPU_STATIC
-			gPxPhysXGpu = PxCreatePhysXGpu();
+			//gPxPhysXGpu = PxCreatePhysXGpu(); /// TODO: not sure about the code below. otherwise linux build does not work. (c) innerviewer
+            PxLoadPhysxGPUModule(NULL);
+            if (g_PxCreatePhysXGpu_Func)
+            {
+                gPxPhysXGpu = g_PxCreatePhysXGpu_Func();
+            }
 #else
 			PxLoadPhysxGPUModule(NULL);
 			if (g_PxCreatePhysXGpu_Func)
